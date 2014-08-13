@@ -59,12 +59,13 @@ SET /A __RETURN_MISSED_PARAM=2
 :: Return varible
 SET /A __RETURN=%__RETURN_UNKNOWN%
 
-:: Validate parameter
+:: Validate parameter(s)
 IF [%BF.Param[0]%] EQU [] (
    SET /A __RETURN=%__RETURN_MISSED_PARAM%
    GOTO :BF.BootStrap.Main_RETURN
 )
 
+:: Set varible(s)
 SET "BF.Script.File=%BF.Param[0]%"
 
 FOR %%i in ("%BF.Param[0]%") DO (
@@ -111,27 +112,72 @@ SET /A __RETURN=%ERRORLEVEL%
 DEL "%BF.Exec.File%" 1>NUL 2>NUL
 
 :BF.BootStrap.Main_RETURN
+REM <- BF.BootStrap.Main
 (
    ENDLOCAL
-   REM <- BF.BootStrap.Main
    EXIT /B %__RETURN%
 )
 
 :BF.BootStrap.Init
 REM -> BF.BootStrap.Init
 
-SET BF
-::FOR %%P IN ("%BF.Param.String%") DO ()
+FOR %%P IN (%BF.Param.String%) DO (
+   REM TODO Parse input params
+   ECHO %%P
+)
+
+
 REM <- BF.BootStrap.Init
 GOTO :eof
 
-:: SET BF_Start=#":<NUL ( SETLOCAL EnableDelayedExpansion#"^
-:: ^#"            & (SET "BF.CMDCMDLINE=^^!CMDCMDLINE^^!")#"^
-:: ^#"            & (CALL SET "BF.Param[0]=%%~f0")#"^
-:: ^#" & (CALL SET /A BF.Param.Count=0)#"^
-:: ^#" & (CALL SET "BF.Param.String=%%*")#"^
-:: ^#" & FOR %%i IN (^!BF.Param.String^!) DO (#"^
-:: ^#" (CALL SET /A "BF.Param.Count=^^!BF.Param.Count^^! + 1")#"^
-:: ^#" &(CALL SET "BF.Param[^^!BF.Param.Count^^!]="%%~i"")))#"^
-:: ^#" & "%~f0" INTERNAL_START "^^!BF.Param[0]^^!"#"
-::#"            & FOR /F "UseBackQ Delims==" %%i IN (`SET BF`) DO SET "%%i="#"
+:BF.BootStrap.Include
+REM -> BF.BootStrap.Include
+:: Open scope
+SETLOCAL EnableDelayedExpansion
+
+:BF.BootStrap.Include_INIT
+
+:: Return codes
+SET /A __RETURN_SUCCESS=0
+SET /A __RETURN_UNKNOWN=1
+SET /A __RETURN_MISSED_PARAM=2
+SET /A __RETURN_FILE_NOT_FOUND=3
+
+:: Return varible
+SET /A __RETURN=%__RETURN_UNKNOWN%
+
+:: Validate varible(s)
+SET "__Include.File=%~1"
+
+IF [%__Include.File%] EQU [] (
+   SET /A __RETURN=%__RETURN_MISSED_PARAM%
+   GOTO :BF.BootStrap.Include_RETURN
+)
+
+SET "__Include.Function.Init=%~n1.Init"
+SET "__Include.Function.Init=!__Include.Function.Init:_=.!"
+
+:BF.BootStrap.Include_BEGIN
+
+IF NOT EXIST "%__Include.File%" (
+   SET /A __RETURN=%__RETURN_FILE_NOT_FOUND%
+   GOTO :BF.BootStrap.Include_RETURN
+)
+
+TYPE "%__Include.File%" >> "%~dpf0"
+SET /A __RETURN=%__RETURN_SUCCESS%
+
+:BF.BootStrap.Include_END
+
+:BF.BootStrap.Include_RETURN
+REM <- BF.BootStrap.Include
+(
+   ENDLOCAL
+   IF NOT [%__RETURN%] EQU [%__RETURN_FILE_NOT_FOUND%] (
+      CALL :%__Include.Function.Init%
+      SET __RETURN=%ERRORLEVEL%
+   )
+   EXIT /B %__RETURN%
+)
+
+
