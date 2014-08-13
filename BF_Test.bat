@@ -8,5 +8,6 @@ REM -> %%BF_Start%%
 :Main
 REM -> BF_Test.Main
 ECHO Hello BF!
+ECHO Hello BF!
 REM <- BF_Test.Main
 EXIT /B
