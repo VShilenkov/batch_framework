@@ -52,6 +52,7 @@ ECHO BF init from %BF.Param[0]%
 FOR %%i in ("%BF.Param[0]%") DO (
    SET "BF.Script.Path=%%~dpi"
    SET "BF.Script.Name=%%~ni"
+   SET "BF.Script.Ext=%%~xi"
    SET "BF.Exec.Tmp=%%~dpni.tmp"
    SET "BF.Exec.Name=%%~ni.tmp"
 )
