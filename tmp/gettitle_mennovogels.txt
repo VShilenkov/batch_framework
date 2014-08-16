@@ -1,0 +1,235 @@
+@echo off
+rem ----------------------------------------------------------------------------
+rem - Description   : Script containing sub-routine to get the title of
+rem -                 the active console window and some tests to check
+rem -                 the sub-routine.
+rem - Version       : 1.0
+rem - Author        : Menno Vogels
+rem - Prerequisits  :
+rem -       C:\Windows\system32\Find.exe
+rem -       C:\Windows\system32\TaskList.exe
+rem -       C:\Windows\system32\Wbem\Wmic.exe
+rem - NOTE          :
+rem -   1.  The creation of this script was a result of the 'Real-life batch
+rem -       challenge - Read the title of the running batch file's own window
+rem -       (the TITLE command can set the title, but sometimes we may want
+rem -       to restore the original title)' initiated by Rob van der Woude.
+rem -       http://www.robvanderwoude.com
+rem -   2.  Developed on a Desktop PC running Windows XP Professional using
+rem -       Notepad++ v5.8.6 with additional plugins: TagsView v1.0.3 and
+rem -       WindowsManager v1.2.2.
+rem ----------------------------------------------------------------------------
+:Main
+    @echo off
+    setlocal EnableExtensions EnableDelayedExpansion
+
+:Main.INIT
+    rem - To pause or not to pause on exit ...
+    set _doPause=
+    rem - ... determine how the Command Processor was invoked ...
+    set _CMDCMDLINE=%CMDCMDLINE%
+    rem - ... replace some special script characters with a hex value ...
+    set _CMDCMDLINE=%_CMDCMDLINE:&=#38;%
+    set _CMDCMDLINE=%_CMDCMDLINE:"=#34;%
+    rem - ... check for applicable prefix ...
+    set _CMDCMDLINE=%_CMDCMDLINE:~0,6%
+    if /I "cmd /c" EQU "%_CMDCMDLINE%" set _doPause=TRUE
+    rem - ... was it the Windows Shell, then pause on exit so one is
+    rem -     able to read any (error) messages when applicable.
+
+:Main.BEGIN
+    rem -----
+    rem - Define the tests
+    set /A testCnt=0
+    rem - "DescriptionApplyTitleExpectedTitle"
+    for %%T in (
+        "Uppercase onlyABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "Lowercase onlyabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+        "Trailing Whitespace [0x09]{1}WindowTitle	WindowTitle	"
+        "Trailing Whitespace [0x09]{3}WindowTitle			WindowTitle			"
+        "Trailing Whitespace [0x20]{1}WindowTitle WindowTitle "
+        "Trailing Whitespace [0x20]{3}WindowTitle   WindowTitle   "
+        "Leading Whitespace [0x09]{1}	WindowTitleWindowTitle"
+        "Leading Whitespace [0x09]{3}			WindowTitleWindowTitle"
+        "Leading Whitespace [0x20]{1} WindowTitleWindowTitle"
+        "Leading Whitespace [0x20]{3}   WindowTitleWindowTitle"
+        "Middle Whitespace [0x09]{1}Window	TitleWindow	Title"
+        "Middle Whitespace [0x09]{3}Window			TitleWindow			Title"
+        "Middle Whitespace [0x20]{1}Window TitleWindow Title"
+        "Middle Whitespace [0x20]{3}Window   TitleWindow   Title"
+        "Punctuation TildeWindow ~ TitleWindow ~ Title"
+        "Punctuation Eclamation MarkWindow ^^^! TitleWindow ^^^! Title"
+        "Punctuation Commercial AtWindow @ TitleWindow @ Title"
+        "Punctuation HashWindow # TitleWindow # Title"
+        "Punctuation Dollar SignWindow $ TitleWindow $ Title"
+        "Punctuation Percent SignWindow %% TitleWindow %%%% Title"
+        "Punctuation CaretWindow ^^ TitleWindow ^^ Title"
+        "Punctuation AmpersandWindow ^& TitleWindow ^& Title"
+        "Punctuation AsteriskWindow * TitleWindow * Title"
+        "Punctuation Parenthesis OpenWindow ^( TitleWindow ^( Title"
+        "Punctuation Parenthesis CloseWindow ^) TitleWindow ^) Title"
+        "Punctuation UnderscoreWindow _ TitleWindow _ Title"
+        "Punctuation Plus SignWindow + TitleWindow + Title"
+        "Punctuation Curly Bracket OpenWindow { TitleWindow { Title"
+        "Punctuation Curly Bracket CloseWindow } TitleWindow } Title"
+        "Punctuation Vertical BarWindow ^| TitleWindow ^| Title"
+        "Punctuation ColonWindow : TitleWindow : Title"
+        "Punctuation Quotation MarksWindow "" TitleWindow "" Title"
+        "Punctuation Less SignWindow ^< TitleWindow ^< Title"
+        "Punctuation Greater SignWindow ^> TitleWindow ^> Title"
+        "Punctuation Question MarkWindow ? TitleWindow ? Title"
+        "Punctuation PrimeWindow ` TitleWindow ` Title"
+        "Punctuation HyphenWindow - TitleWindow - Title"
+        "Punctuation Equal SignWindow = TitleWindow = Title"
+        "Punctuation Square Bracket OpenWindow [ TitleWindow [ Title"
+        "Punctuation Square Bracket CloseWindow ] TitleWindow ] Title"
+        "Punctuation BackslashWindow \ TitleWindow \ Title"
+        "Punctuation SemicolonWindow ; TitleWindow ; Title"
+        "Punctuation ApostropheWindow ' TitleWindow ' Title"
+        "Punctuation CommaWindow , TitleWindow , Title"
+        "Punctuation PeriodWindow . TitleWindow . Title"
+        "Punctuation SlashWindow / TitleWindow / Title"
+    ) do (
+        set /A testCnt+=1
+        for /F "UseBackQ Tokens=1,2,3 Delims=" %%A in ('%%~T') do (
+            set Test[!testCnt!].Description="%%~A"
+            set Test[!testCnt!].Apply="%%~B"
+            set Test[!testCnt!].Expected="%%~C"
+        )
+    )
+    rem - TAP (Test Anything Protocol)
+    rem - \ test plan
+    echo.1..%testCnt% - Test `GetWindowTitle`
+    rem - \ run tests
+    for /L %%i in (1,1,%testCnt%) do (
+        for %%V in (Description,Apply,Expected) do (
+            set _%%V=!Test[%%i].%%V!
+            set _%%V=!_%%V:~1,-1!
+        )
+        rem - Apply window title
+        title !_Apply!
+        rem - Get window title
+        set _Actual=
+        call :GetWindowTitle _Actual
+        rem - Validate window title
+        if not errorlevel 0 (
+                echo.not ok %%i - !_Description!
+                echo.#     ERROR GetWindowTitle returned code !ERRORLEVEL!
+        ) else (
+            rem - NOTE: returned title already enclosed in double quotes!
+            if !_Actual! EQU "!_Expected!" (
+                echo.ok %%i - !_Description!
+            ) else (
+                echo.not ok %%i - !_Description!
+                echo.#     Failed test
+                echo.#          got: !_Actual!
+                echo.#     expected: "!_Expected!"
+            )
+        )
+    )
+
+:Main.END
+    rem - Wait for user to acknowledge before exit?
+    if defined _doPause pause
+
+:Main.RETURN
+    endlocal
+    echo on
+    @goto :EOF
+
+::-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+::------------------------------------------------------------------------------
+::  Function    : GetWindowTitle
+::
+::  Description : Get title/caption of console window in which this Windows
+::                command shell script is executed.
+::  Parameters  : [ref] Title   Title of window enclosed in double quotes
+::  Return      :
+::      0  = PASSED.
+::      1  = FAILED - Unknown.
+::      2  = FAILED - First parameter not specified.
+::      3  = FAILED - `Find`-command not found.
+::      4  = FAILED - `WMIC`-command not found.
+::      5  = FAILED - `TaskList`-command not found.
+::------------------------------------------------------------------------------
+:GetWindowTitle
+    setlocal EnableExtensions EnableDelayedExpansion
+    set _ERRORLEVEL=1
+    rem - Validate parameter(s)
+    set refTitle=%~1
+    if not defined refTitle (
+        set _ERRORLEVEL=2
+        goto :GetWindowTitle.RETURN
+    )
+    set /A _ERRORLEVEL=3
+:GetWindowTitle.INIT
+    rem - Get copy of command line of this script and ...
+    set _CMDCMDLINE=%CMDCMDLINE%
+    rem - ... replace some special script characters
+    set _CMDCMDLINE=%_CMDCMDLINE:&=#038;%
+    set _CMDCMDLINE=%_CMDCMDLINE:"=#034;%
+    rem - Check for availability of mandatory tools
+    set System32Root=%SystemRoot%\system32
+    set _Cmd[#]=Find,WMIC,TskL
+    set _Cmd[Find]=%System32Root%\find.exe
+    set _Cmd[WMIC]=%System32Root%\wbem\wmic.exe
+    set _Cmd[TskL]=%System32Root%\tasklist.exe
+    for %%C in (%_Cmd[#]%) do (
+        if not exist "!_Cmd[%%C]!" (
+            echo.Missing "!_Cmd[%%C]!" >&2
+            goto :GetWindowTitle.RETURN
+        )
+        set /A _ERRORLEVEL+=1
+    )
+:GetWindowTitle.BEGIN
+    rem -----
+    set _ProcessID=
+    set _WindowsTitle=
+    rem -----
+    rem - Retrieve ProcessID of active console window
+    rem - NOTE:
+    rem -   1. filter in console windows.
+    rem -   2. discard any WMI console process (WMI expression in `for` command
+    rem -      results in an additional console process).
+    rem -   3. multiple console windows might be running, differentiate by comparing
+    rem -      this script command line with each console process command line.
+    set _WMICmdLine=
+    set _WMIPath=Path Win32_Process
+    set _WMIQuery=WHERE "Name='cmd.exe' AND NOT Commandline LIKE '%%WMIC%%'"
+    set _WMIVerb=Get CommandLine^^, ProcessId
+    for /F "UseBackQ tokens=2,3 Delims=," %%A in (
+        `%_Cmd[WMIC]% /NODE:'%COMPUTERNAME%' %_WMIPath% %_WMIQuery% %_WMIVerb% /Format:CSV ^| %_Cmd[Find]% "%COMPUTERNAME%"`
+    ) do (
+        set _WMICmdLine=%%A
+        rem - Replace some special script characters
+        set _WMICmdLine=!_WMICmdLine:^&amp;=#038;!
+        set _WMICmdLine=!_WMICmdLine:"=#034;!
+        rem -
+        if /I "!_WMICmdLine!" EQU "%_CMDCMDLINE%"  set _ProcessID=%%B
+    )
+    rem -----
+    rem - Retrieve title/caption of active console window
+    rem - NOTE:
+    rem -   1. using retrieved process ID as filter
+    rem -   2. discard stderr (in my case some unprintable characters)
+    rem -   3. using `find` as an output filter
+    for /F "UseBackQ Tokens=*" %%A in (
+        `%_Cmd[TskL]% /V /FI "PID eq %_ProcessID%" /FO "LIST" 2^>nul ^| %_Cmd[Find]% /I "Window Title"`
+    ) do if [%%A] NEQ [] (
+        set _WindowTitle="%%~A"
+        rem - Remove label (i.e. `Window Title: `) from value
+        set _WindowTitle=!_WindowTitle:Window Title: =!
+    )
+    ::-----
+:GetWindowTitle.END
+    set _ERRORLEVEL=0
+:GetWindowTitle.RETURN
+    endlocal ^
+        & (set %refTitle%=%_WindowTitle%) ^
+        & (exit /b %_ERRORLEVEL%)
+::------------------------------------------------------------------------------
+
+::-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+:: End of File
+::-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

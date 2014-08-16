@@ -16,13 +16,15 @@ GOTO :EOF
 REM -> BF.BootStrap.Prepare
 SETLOCAL
 
-:BF.BootStrap.Param_INIT
+:BF.BootStrap.Prepare_INIT
+REM -> BF.BootStrap.Prepare_INIT
 
 SET /A __RETURN_SUCCESS=0
 SET /A __RETURN_UNKNOWN=1
 SET /A __RETURN=%__RETURN_UNKNOWN%
 
-:BF.BootStrap.Param_BEGIN
+:BF.BootStrap.Prepare_BEGIN
+REM -> BF.BootStrap.Prepare_BEGIN
 
 SET BF_Start=#":<NUL ( SETLOCAL EnableDelayedExpansion#"^
 #"& CALL SET "BF.System.CmdLine=%%CMDCMDLINE%%"#"^
@@ -31,16 +33,15 @@ SET BF_Start=#":<NUL ( SETLOCAL EnableDelayedExpansion#"^
 #"& "%~f0" /INTERNAL_START#"^
 #"& FOR /F "UseBackQ Tokens=1,* Delims==" %%i IN (`SET BF`) DO SET "%%i="#"
 
-:BF.BootStrap.Param_END
+:BF.BootStrap.Prepare_END
 
 SET /A __RETURN=%__RETURN_SUCCESS%
 
-:BF.BootStrap.Param_RETURN
+:BF.BootStrap.Prepare_RETURN
+REM <- BF.BootStrap.Prepare
 (
    ENDLOCAL
    SET "BF_Start=%BF_Start:#"=%"
-   
-   REM <- BF.BootStrap.Prepare
    EXIT /B %__RETURN%
 )
 
@@ -98,6 +99,20 @@ SET /P ".=CALL :BF.BootStrap.Init & GOTO :%%%%BF_Start%%%%" 1>%BF.Tmp.File% 0<NU
    ECHO.
 ) >> %BF.Tmp.File%
 
+FOR /F "UseBackQ Delims== Tokens=1,*" %%i IN (`SET __`) DO (
+   (
+      ECHO :: %%i : %%j
+      ECHO.
+   ) >> %BF.Tmp.File%
+)
+
+FOR /F "UseBackQ Delims== Tokens=1,*" %%i IN (`SET BF`) DO (
+   (
+      ECHO :: %%i : %%j
+      ECHO.
+   ) >> %BF.Tmp.File%
+)
+
 TYPE "%~f0" >> %BF.Tmp.File%
 
 IF EXIST "%BF.Exec.File%" (DEL "%BF.Exec.File%" 1>NUL 2>NUL)
@@ -105,11 +120,12 @@ IF EXIST "%BF.Exec.File%" (DEL "%BF.Exec.File%" 1>NUL 2>NUL)
 REN "%BF.Tmp.File%" "%BF.Tmp.Name%%BF.Script.Ext%"
 
 CALL %BF.Exec.File%
+CALL :BF.BootStrap.ClearLocal
 
 :BF.BootStrap.Main_END
 SET /A __RETURN=%ERRORLEVEL%
 
-DEL "%BF.Exec.File%" 1>NUL 2>NUL
+::DEL "%BF.Exec.File%" 1>NUL 2>NUL
 
 :BF.BootStrap.Main_RETURN
 REM <- BF.BootStrap.Main
@@ -165,9 +181,11 @@ IF NOT EXIST "%__Include.File%" (
 )
 
 TYPE "%__Include.File%" >> "%~dpf0"
-SET /A __RETURN=%__RETURN_SUCCESS%
+
 
 :BF.BootStrap.Include_END
+
+SET /A __RETURN=%__RETURN_SUCCESS%
 
 :BF.BootStrap.Include_RETURN
 REM <- BF.BootStrap.Include
@@ -180,4 +198,8 @@ REM <- BF.BootStrap.Include
    EXIT /B %__RETURN%
 )
 
+:BF.BootStrap.ClearLocal
+SET /A __=0
+FOR /F "UseBackQ Tokens=1,* Delims==" %%i IN (`SET __`) DO SET "%%i="
 
+EXIT /B 0
