@@ -7,11 +7,11 @@ REM -> BF.BootStrap
 
 SET BF.System.CallStack.File="callstack.log"
 
-IF [%~1] EQU [-INTERNAL_START] (
+IF [%~1] EQU [--INTERNAL_START] (
    CALL :CALL BF.BootStrap.Main
 ) ELSE (
-   DEL %BF.System.CallStack.File% 1>NUL 2>NUL
-   CALL :CALL BF.BootStrap.Prepare
+   IF EXIST "%BF.System.CallStack.File%" DEL %BF.System.CallStack.File% 1>NUL 2>NUL
+   CALL :BF.BootStrap.Prepare
 )
 
 REM <- BF.BootStrap
@@ -21,8 +21,6 @@ EXIT /B %ERRORLEVEL%
 ::---------------------------------- :CALL ----------------------------------::
 ::---------------------------------------------------------------------------::
 :CALL %function_name% [%args%...]
-
-SET BF
 
 :CALL.INIT
 
@@ -47,7 +45,7 @@ IF NOT DEFINED BF.System.CallStack.Depth (
    SET /A BF.System.CallStack.Depth=-1
 ) 
 
-SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1
+SET /A BF.System.CallStack.Depth=%BF.System.CallStack.Depth% + 1
 
 SET "_tab_string="
 IF NOT [%BF.System.CallStack.Depth%] EQU [0] (
@@ -104,7 +102,7 @@ SET BF_Start=#":<NUL ( SETLOCAL EnableDelayedExpansion#"^
 #"& CALL SET "BF.System.CmdLine=%%CMDCMDLINE%%"#"^
 #"& CALL SET "BF.Param[0]=%%~f0"#"^
 #"& CALL SET "BF.Param.String=%%*")#"^
-#"& "%~f0" -INTERNAL_START#"^
+#"& "%~f0" --INTERNAL_START#"^
 #"& FOR /F "UseBackQ Tokens=1,* Delims==" %%i IN (`SET BF`) DO SET "%%i="#"
 
 :BF.BootStrap.Prepare_END
@@ -210,7 +208,7 @@ FOR %%P IN (%BF.Param.String%) DO (
 
 
 REM <- BF.BootStrap.Init
-EXIT /B 
+GOTO :eof
 ::---------------------------------------------------------------------------::
 
 ::---------------------------------------------------------------------------::

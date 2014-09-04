@@ -5,43 +5,10 @@ d:\Projects\batch_framework>REM -> BF.BootStrap
 
 d:\Projects\batch_framework>SET BF.System.CallStack.File="callstack.log" 
 
-d:\Projects\batch_framework>IF [] EQU [-INTERNAL_START] (CALL :CALL BF.BootStrap.Main )  ELSE (
-DEL "callstack.log"  1>NUL 2>NUL  
- CALL :CALL BF.BootStrap.Prepare 
+d:\Projects\batch_framework>IF [] EQU [--INTERNAL_START] (CALL :CALL BF.BootStrap.Main )  ELSE (
+IF EXIST ""callstack.log"" DEL "callstack.log"  1>NUL 2>NUL  
+ CALL :BF.BootStrap.Prepare 
 ) 
-
-d:\Projects\batch_framework>SET BF 
-BF.System.CallStack.File="callstack.log"
-
-d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.Prepare 
-
-d:\Projects\batch_framework>SET /A BF.System.Function.Argc=0 
-
-d:\Projects\batch_framework>SET "BF.System.Function.Argv=" 
-
-d:\Projects\batch_framework>IF [BF.BootStrap.Prepare] EQU [] GOTO :CALL.RETURN 
-
-d:\Projects\batch_framework>FOR %i IN (BF.BootStrap.Prepare) DO (
-IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.System.Function.Argv!%i " )  
- SET /A BF.System.Function.Argc=!BF.System.Function.Argc! + 1 
-) 
-
-d:\Projects\batch_framework>(
-IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.System.Function.Argv!BF.BootStrap.Prepare " )  
- SET /A BF.System.Function.Argc=!BF.System.Function.Argc! + 1 
-) 
-
-d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
-
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
-
-d:\Projects\batch_framework>SET "_tab_string=" 
-
-d:\Projects\batch_framework>IF NOT [0] EQU [0] (FOR /L %i IN (1 1 0) DO (SET "_tab_string=!_tab_string!-" ) ) 
-
-d:\Projects\batch_framework>ECHO ->BF.BootStrap.Prepare  1>>"callstack.log" 
-
-d:\Projects\batch_framework>CALL :BF.BootStrap.Prepare  
 
 d:\Projects\batch_framework>REM -> BF.BootStrap.Prepare 
 
@@ -57,7 +24,7 @@ d:\Projects\batch_framework>SET /A __RETURN=1
 
 d:\Projects\batch_framework>REM -> BF.BootStrap.Prepare_BEGIN 
 
-d:\Projects\batch_framework>SET BF_Start=#":<NUL ( SETLOCAL EnableDelayedExpansion#"#"& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"#"#"& CALL SET "BF.Param[0]=%~f0"#"#"& CALL SET "BF.Param.String=%*")#"#"& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START#"#"& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="#" 
+d:\Projects\batch_framework>SET BF_Start=#":<NUL ( SETLOCAL EnableDelayedExpansion#"#"& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"#"#"& CALL SET "BF.Param[0]=%~f0"#"#"& CALL SET "BF.Param.String=%*")#"#"& "d:\Projects\batch_framework\BF_BootStrap.bat" --INTERNAL_START#"#"& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="#" 
 
 d:\Projects\batch_framework>REM -> BF.BootStrap.Prepare_END 
 
@@ -67,43 +34,24 @@ d:\Projects\batch_framework>REM <- BF.BootStrap.Prepare_RETURN
 
 d:\Projects\batch_framework>(
 ENDLOCAL 
- SET "BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i=""  
+ SET "BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" --INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i=""  
  EXIT /B 0 
 ) 
-
-d:\Projects\batch_framework>SET "_tab_string1=" 
-
-d:\Projects\batch_framework>IF NOT [0] EQU [0] (FOR /L %i IN (1 1 0) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
-
-d:\Projects\batch_framework>ECHO <-BF.BootStrap.Prepare  1>>"callstack.log" 
-
-d:\Projects\batch_framework>IF [0] GEQ [0] (SET /A BF.System.CallStack.Depth=0 - 1 ) 
-
-d:\Projects\batch_framework>EXIT /B 0 
 
 d:\Projects\batch_framework>REM <- BF.BootStrap 
 
 d:\Projects\batch_framework>EXIT /B 0 
 
-d:\Projects\batch_framework>(SETLOCAL EnableDelayedExpansion  & CALL SET "BF.System.CmdLine=%CMDCMDLINE%"  & CALL SET "BF.Param[0]=%~f0"  & CALL SET "BF.Param.String=%*" ) 0<NUL  & "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START  & FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i=" 
+d:\Projects\batch_framework>(SETLOCAL EnableDelayedExpansion  & CALL SET "BF.System.CmdLine=%CMDCMDLINE%"  & CALL SET "BF.Param[0]=%~f0"  & CALL SET "BF.Param.String=%*" ) 0<NUL  & "d:\Projects\batch_framework\BF_BootStrap.bat" --INTERNAL_START  & FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i=" 
 
 d:\Projects\batch_framework>REM -> BF.BootStrap 
 
 d:\Projects\batch_framework>SET BF.System.CallStack.File="callstack.log" 
 
-d:\Projects\batch_framework>IF [-INTERNAL_START] EQU [-INTERNAL_START] (CALL :CALL BF.BootStrap.Main )  ELSE (
-DEL "callstack.log"  1>NUL 2>NUL  
- CALL :CALL BF.BootStrap.Prepare 
+d:\Projects\batch_framework>IF [--INTERNAL_START] EQU [--INTERNAL_START] (CALL :CALL BF.BootStrap.Main )  ELSE (
+IF EXIST ""callstack.log"" DEL "callstack.log"  1>NUL 2>NUL  
+ CALL :BF.BootStrap.Prepare 
 ) 
-
-d:\Projects\batch_framework>SET BF 
-BF.Param[0]=d:\Projects\batch_framework\BF_Test.bat
-BF.System.CallStack.Depth=-1
-BF.System.CallStack.File="callstack.log"
-BF.System.CmdLine="C:\Windows\System32\cmd.exe" 
-BF.System.Function.Argc=1
-BF.System.Function.Name=BF.BootStrap.Prepare
-BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="
 
 d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.Main 
 
@@ -125,7 +73,7 @@ IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.Sys
 
 d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
 
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
+d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=-1 + 1 
 
 d:\Projects\batch_framework>SET "_tab_string=" 
 
@@ -182,23 +130,6 @@ d:\Projects\batch_framework>SET /P ".=CALL :CALL BF.BootStrap.Init & GOTO :%%BF_
 
 d:\Projects\batch_framework>CALL :CALL BF.BootStrap.Include  d:\Projects\batch_framework\BF_Test.bat d:\Projects\batch_framework\BF_Test_BFExec.tmp --no_init 
 
-d:\Projects\batch_framework>SET BF 
-BF.Client.Script.Ext=.bat
-BF.Client.Script.File=d:\Projects\batch_framework\BF_Test.bat
-BF.Client.Script.Name=BF_Test
-BF.Client.Script.Path=d:\Projects\batch_framework\
-BF.Exec.Exec.File=d:\Projects\batch_framework\BF_Test_BFExec.bat
-BF.Exec.Tmp.Ext=.tmp
-BF.Exec.Tmp.File=d:\Projects\batch_framework\BF_Test_BFExec.tmp
-BF.Exec.Tmp.Name=BF_Test_BFExec
-BF.Param[0]=d:\Projects\batch_framework\BF_Test.bat
-BF.System.CallStack.Depth=0
-BF.System.CallStack.File="callstack.log"
-BF.System.CmdLine="C:\Windows\System32\cmd.exe" 
-BF.System.Function.Argc=1
-BF.System.Function.Name=BF.BootStrap.Main
-BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="
-
 d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.Include 
 
 d:\Projects\batch_framework>SET /A BF.System.Function.Argc=0 
@@ -234,7 +165,7 @@ IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.Sys
 
 d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
 
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
+d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=0 + 1 
 
 d:\Projects\batch_framework>SET "_tab_string=" 
 
@@ -317,11 +248,11 @@ CALL :
  EXIT /B 0 
 ) 
 
-d:\Projects\batch_framework>SET "_tab_string1=" 
+d:\Projects\batch_framework>SET "_tab_string=" 
 
-d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
+d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string=!_tab_string!-" ) ) 
 
-d:\Projects\batch_framework>(SET "_tab_string1=!_tab_string1!-" ) 
+d:\Projects\batch_framework>(SET "_tab_string=!_tab_string!-" ) 
 
 d:\Projects\batch_framework>ECHO <--BF.BootStrap.Include  1>>"callstack.log" 
 
@@ -338,24 +269,6 @@ ECHO.
 ) 1>>d:\Projects\batch_framework\BF_Test_BFExec.tmp 
 
 d:\Projects\batch_framework>CALL :CALL BF.BootStrap.Include d:\Projects\batch_framework\BF_BootStrap.bat d:\Projects\batch_framework\BF_Test_BFExec.tmp --no_init 
-
-d:\Projects\batch_framework>SET BF 
-BF.Client.Script.Ext=.bat
-BF.Client.Script.File=d:\Projects\batch_framework\BF_Test.bat
-BF.Client.Script.Name=BF_Test
-BF.Client.Script.Path=d:\Projects\batch_framework\
-BF.Exec.Exec.File=d:\Projects\batch_framework\BF_Test_BFExec.bat
-BF.Exec.Tmp.Ext=.tmp
-BF.Exec.Tmp.File=d:\Projects\batch_framework\BF_Test_BFExec.tmp
-BF.Exec.Tmp.Name=BF_Test_BFExec
-BF.Param[0]=d:\Projects\batch_framework\BF_Test.bat
-BF.System.CallStack.Depth=0
-BF.System.CallStack.File="callstack.log"
-BF.System.CmdLine="C:\Windows\System32\cmd.exe" 
-BF.System.Function.Argc=4
-BF.System.Function.Argv=d:\Projects\batch_framework\BF_Test.bat d:\Projects\batch_framework\BF_Test_BFExec.tmp --no_init 
-BF.System.Function.Name=BF.BootStrap.Include
-BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="
 
 d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.Include 
 
@@ -392,7 +305,7 @@ IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.Sys
 
 d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
 
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
+d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=0 + 1 
 
 d:\Projects\batch_framework>SET "_tab_string=" 
 
@@ -475,11 +388,11 @@ CALL :
  EXIT /B 0 
 ) 
 
-d:\Projects\batch_framework>SET "_tab_string1=" 
+d:\Projects\batch_framework>SET "_tab_string=" 
 
-d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
+d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string=!_tab_string!-" ) ) 
 
-d:\Projects\batch_framework>(SET "_tab_string1=!_tab_string1!-" ) 
+d:\Projects\batch_framework>(SET "_tab_string=!_tab_string!-" ) 
 
 d:\Projects\batch_framework>ECHO <--BF.BootStrap.Include  1>>"callstack.log" 
 
@@ -494,24 +407,6 @@ d:\Projects\batch_framework>REN "d:\Projects\batch_framework\BF_Test_BFExec.tmp"
 d:\Projects\batch_framework>CALL d:\Projects\batch_framework\BF_Test_BFExec.bat 
 
 d:\Projects\batch_framework>CALL :CALL BF.BootStrap.Init   & GOTO :%BF_Start%  
-
-d:\Projects\batch_framework>SET BF 
-BF.Client.Script.Ext=.bat
-BF.Client.Script.File=d:\Projects\batch_framework\BF_Test.bat
-BF.Client.Script.Name=BF_Test
-BF.Client.Script.Path=d:\Projects\batch_framework\
-BF.Exec.Exec.File=d:\Projects\batch_framework\BF_Test_BFExec.bat
-BF.Exec.Tmp.Ext=.tmp
-BF.Exec.Tmp.File=d:\Projects\batch_framework\BF_Test_BFExec.tmp
-BF.Exec.Tmp.Name=BF_Test_BFExec
-BF.Param[0]=d:\Projects\batch_framework\BF_Test.bat
-BF.System.CallStack.Depth=0
-BF.System.CallStack.File="callstack.log"
-BF.System.CmdLine="C:\Windows\System32\cmd.exe" 
-BF.System.Function.Argc=4
-BF.System.Function.Argv=d:\Projects\batch_framework\BF_BootStrap.bat d:\Projects\batch_framework\BF_Test_BFExec.tmp --no_init 
-BF.System.Function.Name=BF.BootStrap.Include
-BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="
 
 d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.Init 
 
@@ -533,7 +428,7 @@ IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.Sys
 
 d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
 
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
+d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=0 + 1 
 
 d:\Projects\batch_framework>SET "_tab_string=" 
 
@@ -556,11 +451,11 @@ d:\Projects\batch_framework>REM <- BF.BootStrap.Init
 
 d:\Projects\batch_framework>GOTO :eof 
 
-d:\Projects\batch_framework>SET "_tab_string1=" 
+d:\Projects\batch_framework>SET "_tab_string=" 
 
-d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
+d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string=!_tab_string!-" ) ) 
 
-d:\Projects\batch_framework>(SET "_tab_string1=!_tab_string1!-" ) 
+d:\Projects\batch_framework>(SET "_tab_string=!_tab_string!-" ) 
 
 d:\Projects\batch_framework>ECHO <--BF.BootStrap.Init  1>>"callstack.log" 
 
@@ -571,23 +466,6 @@ d:\Projects\batch_framework>EXIT /B 0
 d:\Projects\batch_framework>REM -> %BF_Start% 
 
 d:\Projects\batch_framework>CALL :CALL BF.BootStrap.Include "BF_DateTime.bat" 
-
-d:\Projects\batch_framework>SET BF 
-BF.Client.Script.Ext=.bat
-BF.Client.Script.File=d:\Projects\batch_framework\BF_Test.bat
-BF.Client.Script.Name=BF_Test
-BF.Client.Script.Path=d:\Projects\batch_framework\
-BF.Exec.Exec.File=d:\Projects\batch_framework\BF_Test_BFExec.bat
-BF.Exec.Tmp.Ext=.tmp
-BF.Exec.Tmp.File=d:\Projects\batch_framework\BF_Test_BFExec.tmp
-BF.Exec.Tmp.Name=BF_Test_BFExec
-BF.Param[0]=d:\Projects\batch_framework\BF_Test.bat
-BF.System.CallStack.Depth=0
-BF.System.CallStack.File="callstack.log"
-BF.System.CmdLine="C:\Windows\System32\cmd.exe" 
-BF.System.Function.Argc=1
-BF.System.Function.Name=BF.BootStrap.Init
-BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="
 
 d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.Include 
 
@@ -614,7 +492,7 @@ IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.Sys
 
 d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
 
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
+d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=0 + 1 
 
 d:\Projects\batch_framework>SET "_tab_string=" 
 
@@ -702,11 +580,11 @@ Its ME DATE TIME
 
 d:\Projects\batch_framework>EXIT /B 0 
 
-d:\Projects\batch_framework>SET "_tab_string1=" 
+d:\Projects\batch_framework>SET "_tab_string=" 
 
-d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
+d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string=!_tab_string!-" ) ) 
 
-d:\Projects\batch_framework>(SET "_tab_string1=!_tab_string1!-" ) 
+d:\Projects\batch_framework>(SET "_tab_string=!_tab_string!-" ) 
 
 d:\Projects\batch_framework>ECHO <--BF.BootStrap.Include  1>>"callstack.log" 
 
@@ -724,24 +602,6 @@ d:\Projects\batch_framework>REM <- BF_Test.Main
 d:\Projects\batch_framework>EXIT /B 
 
 d:\Projects\batch_framework>CALL :CALL BF.BootStrap.ClearLocal 
-
-d:\Projects\batch_framework>SET BF 
-BF.Client.Script.Ext=.bat
-BF.Client.Script.File=d:\Projects\batch_framework\BF_Test.bat
-BF.Client.Script.Name=BF_Test
-BF.Client.Script.Path=d:\Projects\batch_framework\
-BF.Exec.Exec.File=d:\Projects\batch_framework\BF_Test_BFExec.bat
-BF.Exec.Tmp.Ext=.tmp
-BF.Exec.Tmp.File=d:\Projects\batch_framework\BF_Test_BFExec.tmp
-BF.Exec.Tmp.Name=BF_Test_BFExec
-BF.Param[0]=d:\Projects\batch_framework\BF_Test.bat
-BF.System.CallStack.Depth=0
-BF.System.CallStack.File="callstack.log"
-BF.System.CmdLine="C:\Windows\System32\cmd.exe" 
-BF.System.Function.Argc=2
-BF.System.Function.Argv="BF_DateTime.bat" 
-BF.System.Function.Name=BF.BootStrap.Include
-BF_Start=:<NUL ( SETLOCAL EnableDelayedExpansion& CALL SET "BF.System.CmdLine=%CMDCMDLINE%"& CALL SET "BF.Param[0]=%~f0"& CALL SET "BF.Param.String=%*")& "d:\Projects\batch_framework\BF_BootStrap.bat" -INTERNAL_START& FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET BF`) DO SET "%i="
 
 d:\Projects\batch_framework>SET BF.System.Function.Name=BF.BootStrap.ClearLocal 
 
@@ -763,7 +623,7 @@ IF NOT [!BF.System.Function.Argc!] EQU [0] (SET "BF.System.Function.Argv=!BF.Sys
 
 d:\Projects\batch_framework>IF NOT DEFINED BF.System.CallStack.Depth (SET /A BF.System.CallStack.Depth=-1 ) 
 
-d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=!BF.System.CallStack.Depth! + 1 
+d:\Projects\batch_framework>SET /A BF.System.CallStack.Depth=0 + 1 
 
 d:\Projects\batch_framework>SET "_tab_string=" 
 
@@ -781,8 +641,6 @@ d:\Projects\batch_framework>FOR /F "UseBackQ Tokens=1,* Delims==" %i IN (`SET __
 
 d:\Projects\batch_framework>SET "__=" 
 
-d:\Projects\batch_framework>SET "__function_argc=" 
-
 d:\Projects\batch_framework>SET "__RETURN=" 
 
 d:\Projects\batch_framework>SET "__RETURN_MISSED_PARAM=" 
@@ -793,11 +651,11 @@ d:\Projects\batch_framework>SET "__RETURN_UNKNOWN="
 
 d:\Projects\batch_framework>EXIT /B 0 
 
-d:\Projects\batch_framework>SET "_tab_string1=" 
+d:\Projects\batch_framework>SET "_tab_string=" 
 
-d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
+d:\Projects\batch_framework>IF NOT [1] EQU [0] (FOR /L %i IN (1 1 1) DO (SET "_tab_string=!_tab_string!-" ) ) 
 
-d:\Projects\batch_framework>(SET "_tab_string1=!_tab_string1!-" ) 
+d:\Projects\batch_framework>(SET "_tab_string=!_tab_string!-" ) 
 
 d:\Projects\batch_framework>ECHO <--BF.BootStrap.ClearLocal  1>>"callstack.log" 
 
@@ -816,9 +674,9 @@ ENDLOCAL
  EXIT /B 0 
 ) 
 
-d:\Projects\batch_framework>SET "_tab_string1=" 
+d:\Projects\batch_framework>SET "_tab_string=" 
 
-d:\Projects\batch_framework>IF NOT [0] EQU [0] (FOR /L %i IN (1 1 0) DO (SET "_tab_string1=!_tab_string1!-" ) ) 
+d:\Projects\batch_framework>IF NOT [0] EQU [0] (FOR /L %i IN (1 1 0) DO (SET "_tab_string=!_tab_string!-" ) ) 
 
 d:\Projects\batch_framework>ECHO <-BF.BootStrap.Main  1>>"callstack.log" 
 
@@ -830,12 +688,6 @@ d:\Projects\batch_framework>REM <- BF.BootStrap
 
 d:\Projects\batch_framework>EXIT /B 0 
 
-d:\Projects\batch_framework>SET "BF.System.CallStack.Depth=" 
-
 d:\Projects\batch_framework>SET "BF.System.CallStack.File=" 
-
-d:\Projects\batch_framework>SET "BF.System.Function.Argc=" 
-
-d:\Projects\batch_framework>SET "BF.System.Function.Name=" 
 
 d:\Projects\batch_framework>SET "BF_Start=" 
