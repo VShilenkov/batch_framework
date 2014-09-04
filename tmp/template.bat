@@ -8,7 +8,7 @@
 :: @author      : VShilenkov
 :: @date        : <date>
 :: @brief       : <short_single_line_script_description>
-:: @command line: <usage>
+:: @command_line: <usage>
 :: @param       : <parameter_description>
 :: @return      : <return_code_description>
 :: @description : <long_multi_line_script_description>
